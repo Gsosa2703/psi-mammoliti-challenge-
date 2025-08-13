@@ -1,6 +1,8 @@
 "use client";
 import { useMemo, useState } from "react";
+import data from "@/data/psychologists.json";
 import Filters from "@/components/Filters";
+import PsychologistCard from "@/components/PsychologistCard";
 import ProfileModal from "@/components/ProfileModal";
 
 type WeeklyAvailability = {
@@ -29,7 +31,18 @@ export default function Home() {
   const [search, setSearch] = useState("");
   const [categories, setCategories] = useState<string[]>([]);
   const [selected, setSelected] = useState<Psychologist | null>(null);
+  const psychologists = data as unknown as Psychologist[];
 
+  const results = useMemo(() => {
+    const s = search.trim().toLowerCase();
+    return psychologists.filter((p) => {
+      const matchesSearch = s
+        ? p.name.toLowerCase().includes(s) || p.specialties.some((x) => x.toLowerCase().includes(s))
+        : true;
+      const matchesCategories = categories.length > 0 ? categories.every((c) => p.specialties.includes(c)) : true;
+      return matchesSearch && matchesCategories;
+    });
+  }, [search, categories, psychologists]);
 
   function toggleCategory(category: string) {
     setCategories((prev) => (prev.includes(category) ? prev.filter((c) => c !== category) : [...prev, category]));
@@ -59,8 +72,14 @@ export default function Home() {
 
         <div className="mt-6">
           <h2 className="text-base font-semibold">Psicólogos disponibles</h2>
+          <p className="mt-1 text-xs text-black/60 dark:text-white/60">{results.length} profesionales encontrados</p>
         </div>
 
+        <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {results.map((p) => (
+            <PsychologistCard key={p.id} data={p} onOpen={() => setSelected(p)} />
+          ))}
+        </div>
       </section>
 
       {/* Footer full-width with inner padding */}
