@@ -1,12 +1,15 @@
 import { cn } from "@/lib/utils";
-import { ButtonHTMLAttributes } from "react";
+import { ButtonHTMLAttributes, DetailedHTMLProps } from "react";
+import Link from "next/link";
 
-type Props = ButtonHTMLAttributes<HTMLButtonElement> & {
+type ButtonPropsBase = ButtonHTMLAttributes<HTMLButtonElement> & {
   variant?: "default" | "outline" | "ghost";
   size?: "sm" | "md" | "lg";
 };
 
-export function Button({ className, variant = "default", size = "md", ...props }: Props) {
+type Props = ButtonPropsBase & { asChild?: boolean };
+
+export function Button({ className, variant = "default", size = "md", asChild, ...props }: Props) {
   const base = "inline-flex items-center justify-center rounded-md font-medium transition-colors disabled:pointer-events-none disabled:opacity-50";
   const variants = {
     default: "bg-black text-white dark:bg-white dark:text-black hover:opacity-90",
@@ -18,6 +21,12 @@ export function Button({ className, variant = "default", size = "md", ...props }
     md: "h-9 px-4 text-sm",
     lg: "h-10 px-5 text-base"
   } as const;
+  if (asChild) {
+    // Consumers can use asChild with Next Link by passing children=<Link/>.
+    return (
+      <span className={cn(base, variants[variant], sizes[size], className)}>{(props as any).children}</span>
+    );
+  }
   return <button className={cn(base, variants[variant], sizes[size], className)} {...props} />;
 }
 

@@ -2,8 +2,7 @@
 import { useMemo, useState } from "react";
 import data from "@/data/psychologists.json";
 import Filters from "@/components/Filters";
-import PsychologistCard from "@/components/PsychologistCard";
-import ProfileModal from "@/components/ProfileModal";
+import PsychologistCard from "../components/PsychologistCard";
 
 type WeeklyAvailability = {
   mon: string[];
@@ -30,7 +29,6 @@ type Psychologist = {
 export default function Home() {
   const [search, setSearch] = useState("");
   const [categories, setCategories] = useState<string[]>([]);
-  const [selected, setSelected] = useState<Psychologist | null>(null);
   const psychologists = data as unknown as Psychologist[];
 
   const results = useMemo(() => {
@@ -77,7 +75,7 @@ export default function Home() {
 
         <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {results.map((p) => (
-            <PsychologistCard key={p.id} data={p} onOpen={() => setSelected(p)} />
+            <PsychologistCard key={p.id} data={p} />
           ))}
         </div>
       </section>
@@ -86,8 +84,6 @@ export default function Home() {
       <footer id="contacto" className="mt-10 w-full bg-black/5 py-8 text-center text-sm text-black/60 dark:bg-white/10 dark:text-white/60">
         <div className="mx-auto max-w-6xl px-4">Footer</div>
       </footer>
-
-      <ProfileModal open={!!selected} data={selected} onClose={() => setSelected(null)} />
     </main>
   );
 }
