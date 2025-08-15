@@ -5,14 +5,27 @@ import Filters from "@/components/Filters";
 import PsychologistCard from "../components/PsychologistCard";
 
 type WeeklyAvailability = {
-  mon: string[];
-  tue: string[];
-  wed: string[];
-  thu: string[];
-  fri: string[];
-  sat: string[];
-  sun: string[];
+  online: {
+    mon: string[];
+    tue: string[];
+    wed: string[];
+    thu: string[];
+    fri: string[];
+    sat: string[];
+    sun: string[];
+  };
+  presencial: {
+    mon: string[];
+    tue: string[];
+    wed: string[];
+    thu: string[];
+    fri: string[];
+    sat: string[];
+    sun: string[];
+  };
 };
+
+// Intentionally no standalone DaysKey export to avoid unused warnings
 
 type Psychologist = {
   id: string;
@@ -20,6 +33,8 @@ type Psychologist = {
   image: string;
   specialties: string[];
   modalities: Array<"Online" | "Presencial">;
+  rating?: number;
+  limited?: boolean;
   experienceYears: number;
   sessionMinutes: number;
   priceUSD: number;
@@ -31,19 +46,31 @@ export default function Home() {
   const [search, setSearch] = useState("");
   const [categories, setCategories] = useState<string[]>([]);
   const [modalities, setModalities] = useState<Array<"Online" | "Presencial">>([]);
+  const [limitedOnly, setLimitedOnly] = useState(false);
   const psychologists = data as unknown as Psychologist[];
+
+  const LIMITED_THRESHOLD = 10; // tweakable
 
   const results = useMemo(() => {
     const s = search.trim().toLowerCase();
+    const days = ["mon","tue","wed","thu","fri","sat","sun"] as const;
+    const countFor = (bucket: Record<typeof days[number], string[]>) => days.reduce((acc, d) => acc + (bucket[d]?.length ?? 0), 0);
     return psychologists.filter((p) => {
       const matchesSearch = s
         ? p.name.toLowerCase().includes(s) || p.specialties.some((x) => x.toLowerCase().includes(s))
         : true;
       const matchesCategories = categories.length > 0 ? categories.every((c) => p.specialties.includes(c)) : true;
       const matchesModalities = modalities.length > 0 ? modalities.some((m) => p.modalities.includes(m)) : true;
-      return matchesSearch && matchesCategories && matchesModalities;
+      const matchesLimited = limitedOnly
+        ? (p.limited === true
+            ? true
+            : (modalities.length === 1
+                ? countFor(p.weeklyAvailability[modalities[0] === "Online" ? "online" : "presencial"]) <= LIMITED_THRESHOLD
+                : (countFor(p.weeklyAvailability.online) + countFor(p.weeklyAvailability.presencial)) <= LIMITED_THRESHOLD))
+        : true;
+      return matchesSearch && matchesCategories && matchesModalities && matchesLimited;
     });
-  }, [search, categories, modalities, psychologists]);
+  }, [search, categories, modalities, limitedOnly, psychologists]);
 
   function toggleCategory(category: string) {
     setCategories((prev) => (prev.includes(category) ? prev.filter((c) => c !== category) : [...prev, category]));
@@ -73,6 +100,8 @@ export default function Home() {
           onCategoryToggle={toggleCategory}
           onModalityToggle={toggleModality}
           activeModalities={modalities}
+          limitedOnly={limitedOnly}
+          onToggleLimited={() => setLimitedOnly((v) => !v)}
           activeCategories={categories}
           search={search}
         />
@@ -84,7 +113,7 @@ export default function Home() {
 
         <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {results.map((p) => (
-            <PsychologistCard key={p.id} data={p} />
+            <PsychologistCard key={p.id} data={{ ...p }} />
           ))}
         </div>
       </section>

@@ -10,6 +10,8 @@ type Psychologist = {
 	experienceYears: number;
 	sessionMinutes: number;
 	priceUSD: number;
+	limited?: boolean; // optional flag for limited availability
+	rating?: number;
 };
 
 type CardProps = {
@@ -18,10 +20,26 @@ type CardProps = {
 
 export default function PsychologistCard({ data }: CardProps) {
 	return (
-		<div className="rounded-2xl border border-black/10 bg-white p-3 shadow-sm dark:border-white/10 dark:bg-black">
-			<div className="aspect-[16/9] w-full overflow-hidden rounded-xl bg-black/5 dark:bg-white/10">
+		<div className="rounded-2xl border border-black/10 bg-white p-3 shadow-sm hover:shadow-md dark:border-white/10 dark:bg-black">
+			<div className="relative aspect-[16/9] w-full overflow-hidden rounded-xl bg-black/5 dark:bg-white/10">
 				{/* eslint-disable-next-line @next/next/no-img-element */}
 				<img src={data.image} alt={data.name} className="h-full w-full object-cover" />
+				{data.limited ? (
+					<span className="absolute left-2 top-2 inline-flex items-center gap-1 rounded-full bg-red-600 px-2.5 py-1 text-[10px] font-semibold text-white shadow">
+						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-3 w-3">
+							<path fillRule="evenodd" d="M12 2.25a.75.75 0 0 1 .66.39l9 16.5A.75.75 0 0 1 21 20.25H3a.75.75 0 0 1-.66-1.11l9-16.5a.75.75 0 0 1 .66-.39zm0 5a.75.75 0 0 1 .75.75v5a.75.75 0 1 1-1.5 0v-5A.75.75 0 0 1 12 7.25zm0 9a.875.875 0 1 0 0 1.75.875.875 0 0 0 0-1.75z" clipRule="evenodd" />
+						</svg>
+						Poca disponibilidad
+					</span>
+				) : null}
+				{typeof data.rating === "number" ? (
+					<span className="absolute right-2 top-2 inline-flex items-center gap-1 rounded-full bg-white px-2.5 py-1 text-[10px] font-semibold text-emerald-700 shadow dark:bg-black">
+						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-3 w-3 text-amber-400">
+							<path d="M11.48 3.5a.75.75 0 0 1 1.04 0l2.54 2.57 3.5.51c.74.11 1.03 1.01.5 1.52l-2.53 2.47.6 3.49c.13.74-.65 1.31-1.33.96L12 13.93l-3.15 1.59c-.67.34-1.46-.22-1.33-.96l.6-3.49L5.6 8.1c-.53-.51-.24-1.41.5-1.52l3.5-.51 2.54-2.57z"/>
+						</svg>
+						{data.rating.toFixed(1)}
+					</span>
+				) : null}
 			</div>
 			<div className="mt-3">
 				<div className="flex items-center justify-between gap-2">
@@ -34,10 +52,10 @@ export default function PsychologistCard({ data }: CardProps) {
 							<Button
 								variant="outline"
 								size="sm"
-								className="rounded-full border-blue-300 bg-blue-50 text-blue-700 dark:border-blue-400/40 dark:bg-blue-500/10 dark:text-blue-300"
+								className="cursor-pointer rounded-full border-blue-300 bg-blue-50 text-blue-700 dark:border-blue-400/40 dark:bg-blue-500/10 dark:text-blue-300"
 							>
 								<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-3 w-3">
-									<path d="M3 5.25A2.25 2.25 0 0 1 5.25 3h13.5A2.25 2.25 0 0 1 21 5.25v8.25A2.25 2.25 0 0 1 18.75 15H5.25A2.25 2.25 0 0 1 3 13.5V5.25z"/>
+									<path d="M3 5.25A2.25 2.25 0 0 1 5.25 3h13.5A2.25 2.25 0 0 1 21 5.25v8.25A2.25 2.25 0 0 1 18.75 15H5.25A.75.75 0 0 1 3 13.5V5.25z"/>
 									<path d="M6 18.75A.75.75 0 0 1 6.75 18h10.5a.75.75 0 0 1 0 1.5H6.75A.75.75 0 0 1 6 18.75z"/>
 								</svg>
 								<span className="ml-1">Online</span>
@@ -47,7 +65,7 @@ export default function PsychologistCard({ data }: CardProps) {
 							<Button
 								variant="outline"
 								size="sm"
-								className="rounded-full border-emerald-300 bg-emerald-50 text-emerald-700 dark:border-emerald-400/40 dark:bg-emerald-500/10 dark:text-emerald-300"
+								className="cursor-pointer rounded-full border-emerald-300 bg-emerald-50 text-emerald-700 dark:border-emerald-400/40 dark:bg-emerald-500/10 dark:text-emerald-300"
 							>
 								<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-3 w-3">
 									<path fillRule="evenodd" d="M12 2.25c-4.28 0-7.75 3.47-7.75 7.75 0 4.12 3.19 8.48 6.33 10.96.85.67 1.99.67 2.84 0 3.14-2.48 6.33-6.84 6.33-10.96 0-4.28-3.47-7.75-7.75-7.75zm0 10.25a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z" clipRule="evenodd"/>
@@ -68,7 +86,7 @@ export default function PsychologistCard({ data }: CardProps) {
 					<span className="text-black/70 dark:text-white/70">{data.sessionMinutes} min</span>
 					<span className="font-semibold">USD {data.priceUSD}</span>
 				</div>
-				<Link href={`/profesionales/${data.id}`} className="mt-3 block w-full rounded-xl bg-black px-4 py-2 text-center text-sm font-medium text-white dark:bg-white dark:text-black">
+				<Link href={`/profesionales/${data.id}`} className="mt-3 block w-full cursor-pointer rounded-xl bg-black px-4 py-2 text-center text-sm font-medium text-white dark:bg-white dark:text-black">
 					Ver perfil
 				</Link>
 			</div>

@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { notFound, useParams } from "next/navigation";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 type DaySlots = {
   mon: string[];
@@ -49,6 +50,7 @@ export default function ProfessionalPage() {
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
   const [form, setForm] = useState({ name: "", email: "", phone: "", motive: "" });
   const [confirmation, setConfirmation] = useState<string | null>(null);
+  const [openConfirm, setOpenConfirm] = useState(false);
 
   const userTimezone = useMemo(() => {
     try {
@@ -84,10 +86,12 @@ export default function ProfessionalPage() {
     if (!selectedTime || !form.name || !form.email) return;
     const readable = `${selectedDate.toLocaleDateString(undefined, { weekday: "long", day: "2-digit", month: "long" })} ${selectedTime}`;
     setConfirmation(`Listo, reservaste (${selectedModality}) con ${prof?.name ?? ""} para ${readable}. Recibirás un email de confirmación (simulado).`);
+    setOpenConfirm(true);
   }
 
   return (
-    <main className="mx-auto w-full max-w-6xl px-4 py-6">
+    <div>
+          <main className="mx-auto w-full max-w-6xl px-4 py-6">
       <div className="mb-3 flex items-center gap-3">
         <Link href="/" className="rounded-full border border-black/15 px-3 py-1 text-sm dark:border-white/20">←</Link>
         <h1 className="text-base font-semibold">Perfil del Profesional</h1>
@@ -263,6 +267,22 @@ export default function ProfessionalPage() {
         </div>
       </div>
     </main>
+    <Dialog open={openConfirm} onOpenChange={setOpenConfirm}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Reserva confirmada</DialogTitle>
+        </DialogHeader>
+        <DialogDescription>
+          {confirmation}
+        </DialogDescription>
+        <DialogFooter>
+          <Button variant="outline" onClick={() => setOpenConfirm(false)}>Cerrar</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+
+    </div>
+
   );
 }
 

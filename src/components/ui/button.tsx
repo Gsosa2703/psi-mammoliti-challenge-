@@ -10,7 +10,7 @@ type ButtonPropsBase = ButtonHTMLAttributes<HTMLButtonElement> & {
 type Props = ButtonPropsBase & { asChild?: boolean };
 
 export function Button({ className, variant = "default", size = "md", asChild, ...props }: Props) {
-  const base = "inline-flex items-center justify-center rounded-md font-medium transition-colors disabled:pointer-events-none disabled:opacity-50";
+  const base = "inline-flex cursor-pointer items-center justify-center rounded-md font-medium transition-colors disabled:pointer-events-none disabled:opacity-50";
   const variants = {
     default: "bg-black text-white dark:bg-white dark:text-black hover:opacity-90",
     outline: "border border-black/15 bg-transparent text-black hover:border-black/30 dark:border-white/20 dark:text-white",
