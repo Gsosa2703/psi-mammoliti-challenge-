@@ -212,7 +212,7 @@ export default function ProfessionalPage() {
                     }}
                     className={
                       (selectedTime === slot.date && selectedModality === "Online")
-                        ? "border-blue-600 bg-blue-600 text-white"
+                        ? "border-blue-600 bg-blue-50 text-blue-700 font-semibold"
                         : "border-blue-300 bg-blue-50 text-blue-700 dark:border-blue-400/40 dark:bg-blue-500/10 dark:text-blue-300"
                     }
                   >
@@ -236,7 +236,7 @@ export default function ProfessionalPage() {
                     }}
                     className={
                       (selectedTime === slot.date && selectedModality === "Presencial")
-                        ? "border-emerald-600 bg-emerald-600 text-white"
+                        ? "border-emerald-600 bg-emerald-50 text-emerald-700 font-semibold"
                         : "border-emerald-300 bg-emerald-50 text-emerald-700 dark:border-emerald-400/40 dark:bg-emerald-500/10 dark:text-emerald-300"
                     }
                   >

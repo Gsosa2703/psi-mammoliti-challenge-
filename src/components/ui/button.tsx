@@ -12,7 +12,7 @@ export function Button({ className, variant = "default", size = "md", asChild, .
   const base = "inline-flex cursor-pointer items-center justify-center rounded-md font-medium transition-colors disabled:pointer-events-none disabled:opacity-50";
   const variants = {
     default: "bg-black text-white dark:bg-white dark:text-black hover:opacity-90",
-    outline: "border border-black/15 bg-transparent text-black hover:border-black/30 dark:border-white/20 dark:text-white",
+    outline: "border border-black/15 bg-transparent hover:border-black/30 dark:border-white/20",
     ghost: "bg-transparent hover:bg-black/5 dark:hover:bg-white/10"
   } as const;
   const sizes = {

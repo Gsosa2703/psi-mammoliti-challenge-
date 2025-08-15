@@ -38,16 +38,6 @@ ORDER BY total DESC
 LIMIT 1;
 ```
 
--- Variant by day number (Monday=1..Sunday=7)
-
-```sql
-SELECT EXTRACT(ISODOW FROM start_at) AS dow, COUNT(*) AS total
-FROM sessions
-GROUP BY dow
-ORDER BY total DESC, dow
-LIMIT 1;
-```
-
 ### c) Most used modality
 
 ```sql
