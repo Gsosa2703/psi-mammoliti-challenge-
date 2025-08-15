@@ -50,6 +50,20 @@ export default function ProfessionalPage() {
   const [form, setForm] = useState({ name: "", email: "", phone: "", motive: "" });
   const [confirmation, setConfirmation] = useState<string | null>(null);
 
+  const userTimezone = useMemo(() => {
+    try {
+      const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      const offsetMinutes = new Date().getTimezoneOffset();
+      const sign = offsetMinutes <= 0 ? "+" : "-";
+      const abs = Math.abs(offsetMinutes);
+      const hh = String(Math.floor(abs / 60)).padStart(2, "0");
+      const mm = String(abs % 60).padStart(2, "0");
+      return `${tz} (UTC${sign}${hh}:${mm})`;
+    } catch {
+      return "UTC";
+    }
+  }, []);
+
   const timesForSelectedDay = useMemo(() => {
     const jsDow = selectedDate.getDay();
     const mondayBased = (jsDow + 6) % 7;
@@ -152,10 +166,11 @@ export default function ProfessionalPage() {
             </Button>
           </div>
           <div className="mt-3">
-            <Calendar value={selectedDate} onChange={setSelectedDate} />
+            <Calendar value={selectedDate} onChange={setSelectedDate} minDate={new Date()} />
           </div>
           <div className="mt-3">
             <div className="text-xs text-black/60 dark:text-white/60">Selecciona tu horario ({selectedModality})</div>
+            <div className="mt-1 text-[10px] text-black/50 dark:text-white/50">Horarios mostrados en tu zona: {userTimezone}</div>
           </div>
           <div className="mt-2 space-y-2">
             {timesForSelectedDay.length === 0 && (

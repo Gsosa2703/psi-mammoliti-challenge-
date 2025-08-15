@@ -5,12 +5,15 @@ import { cn } from "@/lib/utils";
 type CalendarProps = {
   value?: Date;
   onChange?: (date: Date) => void;
+  minDate?: Date; // dates before this are disabled
 };
 
 // Minimal inline calendar inspired by shadcn style
-export function Calendar({ value, onChange }: CalendarProps) {
+export function Calendar({ value, onChange, minDate }: CalendarProps) {
   const [cursor, setCursor] = useState<Date>(() => value ?? new Date());
   const selected = value ?? null;
+
+  const minDay = minDate ? new Date(minDate.getFullYear(), minDate.getMonth(), minDate.getDate()) : null;
 
   const year = cursor.getFullYear();
   const month = cursor.getMonth();
@@ -71,13 +74,14 @@ export function Calendar({ value, onChange }: CalendarProps) {
       <div className="mt-1 grid grid-cols-7 gap-1">
         {grid.map((date, idx) => {
           const isSelected = selected && date && date.toDateString() === selected.toDateString();
+          const isDisabled = !!(date && minDay && date < minDay);
           return (
             <button
               key={idx}
-              disabled={!date}
-              onClick={() => date && onChange?.(date)}
+              disabled={!date || isDisabled}
+              onClick={() => date && !isDisabled && onChange?.(date)}
               className={cn(
-                "aspect-square rounded-md text-sm",
+                "aspect-square rounded-md text-sm disabled:opacity-40 disabled:cursor-not-allowed",
                 date ? "hover:bg-black/5 dark:hover:bg-white/10" : "opacity-0",
                 isSelected ? "bg-black text-white dark:bg-white dark:text-black" : ""
               )}
