@@ -1,3 +1,4 @@
+import dayjs from "@/lib/dayjs";
 export type Weekday = "mon" | "tue" | "wed" | "thu" | "fri" | "sat" | "sun";
 
 export type Modality = "Online" | "Presencial";
@@ -18,10 +19,7 @@ export type AvailabilitySlot = {
 };
 
 export function formatDateKey(date: Date): string {
-  const y = date.getFullYear();
-  const m = String(date.getMonth() + 1).padStart(2, "0");
-  const d = String(date.getDate()).padStart(2, "0");
-  return `${y}-${m}-${d}`;
+  return dayjs(date).format("YYYY-MM-DD");
 }
 
 /**
@@ -30,16 +28,8 @@ export function formatDateKey(date: Date): string {
  */
 function localTimeOnDateToUtcIso(day: Date, timeHHmm: string): string {
   const [hh, mm] = timeHHmm.split(":").map((x) => parseInt(x, 10));
-  const local = new Date(day.getFullYear(), day.getMonth(), day.getDate(), hh, mm, 0, 0);
-  return new Date(Date.UTC(
-    local.getUTCFullYear(),
-    local.getUTCMonth(),
-    local.getUTCDate(),
-    local.getUTCHours(),
-    local.getUTCMinutes(),
-    0,
-    0
-  )).toISOString();
+  const local = dayjs(day).hour(hh).minute(mm).second(0).millisecond(0);
+  return local.utc().toISOString();
 }
 
 /**
@@ -52,18 +42,19 @@ export function generateSlotsFromWeekly(
   toDate: Date
 ): AvailabilitySlot[] {
   if (!weekly) return [];
-  const start = new Date(fromDate.getFullYear(), fromDate.getMonth(), fromDate.getDate());
-  const end = new Date(toDate.getFullYear(), toDate.getMonth(), toDate.getDate());
+  const start = dayjs(fromDate).startOf("day");
+  const end = dayjs(toDate).startOf("day");
   const weekdays: Weekday[] = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"];
   const slots: AvailabilitySlot[] = [];
 
-  for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
-    const weekday = weekdays[(d.getDay() + 6) % 7];
+  for (let cursor = start; cursor.isBefore(end) || cursor.isSame(end); cursor = cursor.add(1, "day")) {
+    const jsDay = cursor.day(); // 0 Sun ... 6 Sat
+    const weekday = weekdays[((jsDay + 6) % 7) as number];
     const forOnline = weekly.online?.[weekday] ?? [];
     const forPresencial = weekly.presencial?.[weekday] ?? [];
 
     forOnline.forEach((t) => {
-      const iso = localTimeOnDateToUtcIso(d, t);
+      const iso = localTimeOnDateToUtcIso(cursor.toDate(), t);
       slots.push({
         id: `${psychologistId}|on|${iso}`,
         psychologistId,
@@ -73,7 +64,7 @@ export function generateSlotsFromWeekly(
       });
     });
     forPresencial.forEach((t) => {
-      const iso = localTimeOnDateToUtcIso(d, t);
+      const iso = localTimeOnDateToUtcIso(cursor.toDate(), t);
       slots.push({
         id: `${psychologistId}|pr|${iso}`,
         psychologistId,
@@ -98,7 +89,7 @@ export function groupSlotsByDateAndModality(slots: AvailabilitySlot[], includeSt
   const online: Record<string, AvailabilitySlot[]> = {};
   const presencial: Record<string, AvailabilitySlot[]> = {};
   for (const slot of filtered) {
-    const key = formatDateKey(new Date(slot.date));
+    const key = dayjs(slot.date).format("YYYY-MM-DD");
     const bucket = slot.modality === "Online" ? online : presencial;
     if (!bucket[key]) bucket[key] = [];
     bucket[key].push(slot);
@@ -113,10 +104,7 @@ export function groupSlotsByDateAndModality(slots: AvailabilitySlot[], includeSt
  * Render a local time label (HH:MM) for a UTC ISO date.
  */
 export function formatLocalTimeLabel(isoUtc: string): string {
-  const d = new Date(isoUtc);
-  const hh = String(d.getHours()).padStart(2, "0");
-  const mm = String(d.getMinutes()).padStart(2, "0");
-  return `${hh}:${mm}`;
+  return dayjs(isoUtc).local().format("HH:mm");
 }
 
 

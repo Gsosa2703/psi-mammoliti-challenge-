@@ -1,13 +1,11 @@
 "use client";
 import { useEffect, useMemo, useState } from "react";
 import { getSessions, updateSessionStatus, deleteSession, ScheduledSession } from "@/lib/sessions";
+import dayjs from "@/lib/dayjs";
 import Link from "next/link";
 
 function formatLocalDateTime(isoUtc: string): string {
-  const d = new Date(isoUtc);
-  const date = d.toLocaleDateString(undefined, { weekday: "short", year: "numeric", month: "short", day: "2-digit" });
-  const time = d.toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" });
-  return `${date} ${time}`;
+  return dayjs(isoUtc).local().format("ddd, DD MMM YYYY HH:mm");
 }
 
 export default function MySessionsPage() {

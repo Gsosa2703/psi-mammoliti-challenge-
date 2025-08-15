@@ -1,5 +1,6 @@
 "use client";
 import { useMemo, useState } from "react";
+import dayjs from "@/lib/dayjs";
 import { cn } from "@/lib/utils";
 
 type CalendarProps = {
@@ -14,14 +15,14 @@ export function Calendar({ value, onChange, minDate, maxDate, isDateDisabled }: 
   const [cursor, setCursor] = useState<Date>(() => value ?? new Date());
   const selected = value ?? null;
 
-  const minDay = minDate ? new Date(minDate.getFullYear(), minDate.getMonth(), minDate.getDate()) : null;
-  const maxDay = maxDate ? new Date(maxDate.getFullYear(), maxDate.getMonth(), maxDate.getDate()) : null;
+  const minDay = minDate ? dayjs(minDate).startOf("day") : null;
+  const maxDay = maxDate ? dayjs(maxDate).startOf("day") : null;
 
   const year = cursor.getFullYear();
   const month = cursor.getMonth();
-  const firstOfMonth = new Date(year, month, 1);
-  const startWeekday = (firstOfMonth.getDay() + 6) % 7;
-  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const firstOfMonth = dayjs(new Date(year, month, 1));
+  const startWeekday = ((firstOfMonth.day() + 6) % 7);
+  const daysInMonth = firstOfMonth.daysInMonth();
 
   const grid: Array<Date | null> = useMemo(() => {
     const cells: Array<Date | null> = [];
@@ -31,21 +32,29 @@ export function Calendar({ value, onChange, minDate, maxDate, isDateDisabled }: 
   }, [startWeekday, daysInMonth, year, month]);
 
   const months = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December"
+    dayjs().month(0).format("MMMM"),
+    dayjs().month(1).format("MMMM"),
+    dayjs().month(2).format("MMMM"),
+    dayjs().month(3).format("MMMM"),
+    dayjs().month(4).format("MMMM"),
+    dayjs().month(5).format("MMMM"),
+    dayjs().month(6).format("MMMM"),
+    dayjs().month(7).format("MMMM"),
+    dayjs().month(8).format("MMMM"),
+    dayjs().month(9).format("MMMM"),
+    dayjs().month(10).format("MMMM"),
+    dayjs().month(11).format("MMMM")
   ];
 
-  const weekdays = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"];
+  const weekdays = [
+    dayjs().day(1).format("dd").toUpperCase(),
+    dayjs().day(2).format("dd").toUpperCase(),
+    dayjs().day(3).format("dd").toUpperCase(),
+    dayjs().day(4).format("dd").toUpperCase(),
+    dayjs().day(5).format("dd").toUpperCase(),
+    dayjs().day(6).format("dd").toUpperCase(),
+    dayjs().day(0).format("dd").toUpperCase()
+  ];
 
   return (
     <div className="w-full rounded-xl border border-black/10 p-3 dark:border-white/10">
@@ -76,8 +85,8 @@ export function Calendar({ value, onChange, minDate, maxDate, isDateDisabled }: 
       <div className="mt-1 grid grid-cols-7 gap-1">
         {grid.map((date, idx) => {
           const isSelected = selected && date && date.toDateString() === selected.toDateString();
-          const afterMax = !!(date && maxDay && date > maxDay);
-          const beforeMin = !!(date && minDay && date < minDay);
+          const afterMax = !!(date && maxDay && dayjs(date).isAfter(maxDay));
+          const beforeMin = !!(date && minDay && dayjs(date).isBefore(minDay));
           const predicate = !!(date && isDateDisabled?.(date));
           const isDisabled = beforeMin || afterMax || predicate;
           return (
