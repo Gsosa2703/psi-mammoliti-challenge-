@@ -10,7 +10,7 @@ type Psychologist = {
 	experienceYears: number;
 	sessionMinutes: number;
 	priceUSD: number;
-	limited?: boolean; // optional flag for limited availability
+	limited?: boolean;
 	rating?: number;
 };
 

@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label";
 import { notFound, useParams } from "next/navigation";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { AvailabilitySlot, WeeklyAvailability, formatDateKey, generateSlotsFromWeekly, groupSlotsByDateAndModality, formatLocalTimeLabel } from "@/lib/availability";
+import { saveSession, ScheduledSession } from "@/lib/sessions";
 
 type Psychologist = {
   id: string;
@@ -56,7 +57,7 @@ export default function ProfessionalPage() {
   const grouped = useMemo(() => {
     const from = new Date();
     const to = new Date(Date.now() + 1000 * 60 * 60 * 24 * 90);
-    const slots = prof.slots ?? generateSlotsFromWeekly(prof.weeklyAvailability, prof.id, from, to);
+    const slots = (prof?.slots ?? generateSlotsFromWeekly(prof?.weeklyAvailability, prof?.id ?? "", from, to));
     return groupSlotsByDateAndModality(slots);
   }, [prof]);
 
@@ -74,6 +75,23 @@ export default function ProfessionalPage() {
     if (!selectedTime || !form.name || !form.email) return;
     const readable = `${selectedDate.toLocaleDateString(undefined, { weekday: "long", day: "2-digit", month: "long" })} ${formatLocalTimeLabel(selectedTime)}`;
     setConfirmation(`Listo, reservaste (${selectedModality}) con ${prof?.name ?? ""} para ${readable}. Recibirás un email de confirmación (simulado).`);
+    // Save to local storage as a scheduled session
+    try {
+      const newSession: ScheduledSession = {
+        id: `${prof?.id ?? ""}|${selectedModality}|${selectedTime}`,
+        slotId: `${prof?.id ?? ""}|${selectedModality === "Online" ? "on" : "pr"}|${selectedTime}`,
+        psychologistId: prof?.id ?? "",
+        psychologistName: prof?.name ?? "",
+        modality: selectedModality,
+        datetime: selectedTime,
+        createdAt: new Date().toISOString(),
+        status: "scheduled",
+        sessionMinutes: prof?.sessionMinutes ?? 50,
+        priceUSD: prof?.priceUSD ?? 0,
+        notes: form.motive || undefined
+      };
+      saveSession(newSession);
+    } catch {}
     setOpenConfirm(true);
   }
 

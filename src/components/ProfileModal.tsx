@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { AvailabilitySlot, WeeklyAvailability, formatDateKey, formatLocalTimeLabel, generateSlotsFromWeekly, groupSlotsByDateAndModality } from "@/lib/availability";
+import { saveSession, ScheduledSession } from "@/lib/sessions";
 
 type Psychologist = {
   id: string;
@@ -60,8 +61,24 @@ export default function ProfileModal({ open, data, onClose }: Props) {
 
   function submit() {
     if (!selectedTime || !form.name || !form.email || !data) return;
-    const readable = `${selectedDate.toLocaleDateString(undefined, { weekday: "long", day: "2-digit", month: "long" })} ${selectedTime}`;
+    const readable = `${selectedDate.toLocaleDateString(undefined, { weekday: "long", day: "2-digit", month: "long" })} ${formatLocalTimeLabel(selectedTime)}`;
     setConfirmation(`Listo, reservaste con ${data.name} para ${readable}. Recibirás un email de confirmación.`);
+    try {
+      const newSession: ScheduledSession = {
+        id: `${data.id}|modal|${selectedTime}`,
+        slotId: undefined,
+        psychologistId: data.id,
+        psychologistName: data.name,
+        modality: "Online",
+        datetime: selectedTime,
+        createdAt: new Date().toISOString(),
+        status: "scheduled",
+        sessionMinutes: data.sessionMinutes,
+        priceUSD: data.priceUSD,
+        notes: form.motive || undefined
+      };
+      saveSession(newSession);
+    } catch {}
   }
 
   return (
