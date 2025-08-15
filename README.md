@@ -118,12 +118,14 @@ npm start
 
 ## Supuestos y decisiones
 
+- Fiabilidad horario: fuente de verdad en UTC; conversión al render en local con dayjs().local()
 - Un paciente puede agendar una sesion en los proximos 90 dias
 - Un psicólogo es “limitado” cuando tiene 5 o menos slots libres en la ventana de 90 días
 - Un paciente puede reservar una sesion online y presencial, no hay limites en cuanto a modalidad. Puede usar ambas
 - No hay backend: las reservas se guardan en el navegador (localStorage). En producción, esto debería ser una API segura con autenticación.
 - Los slots se consideran de 50 minutos (por `sessionMinutes` del profesional). No se valida solapamiento en el cliente (la demo no simula simultaneidad real).
 - El catálogo es estático (JSON). En producción se usaría una base de datos
+- Concurrencia inexistente: no se simula doble reserva del mismo slot por dos usuarios; requeriría backend
 
 ## Extensiones sugeridas (futuro)
 
