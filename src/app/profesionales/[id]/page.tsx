@@ -24,6 +24,7 @@ type Psychologist = {
   name: string;
   image: string;
   specialties: string[];
+  modalities: Array<"Online" | "Presencial">;
   experienceYears: number;
   sessionMinutes: number;
   priceUSD: number;
@@ -47,13 +48,13 @@ export default function ProfessionalPage() {
     const mondayBased = (jsDow + 6) % 7;
     const keys = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"] as const;
     const key = keys[mondayBased];
-    return prof.weeklyAvailability[key] ?? [];
+    return (prof?.weeklyAvailability?.[key] as string[] | undefined) ?? [];
   }, [selectedDate, prof]);
 
   function submit() {
     if (!selectedTime || !form.name || !form.email) return;
     const readable = `${selectedDate.toLocaleDateString(undefined, { weekday: "long", day: "2-digit", month: "long" })} ${selectedTime}`;
-    setConfirmation(`Listo, reservaste con ${prof.name} para ${readable}. Recibirás un email de confirmación (simulado).`);
+    setConfirmation(`Listo, reservaste con ${prof?.name ?? ""} para ${readable}. Recibirás un email de confirmación (simulado).`);
   }
 
   return (

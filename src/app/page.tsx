@@ -19,6 +19,7 @@ type Psychologist = {
   name: string;
   image: string;
   specialties: string[];
+  modalities: Array<"Online" | "Presencial">;
   experienceYears: number;
   sessionMinutes: number;
   priceUSD: number;
@@ -29,6 +30,7 @@ type Psychologist = {
 export default function Home() {
   const [search, setSearch] = useState("");
   const [categories, setCategories] = useState<string[]>([]);
+  const [modalities, setModalities] = useState<Array<"Online" | "Presencial">>([]);
   const psychologists = data as unknown as Psychologist[];
 
   const results = useMemo(() => {
@@ -38,12 +40,17 @@ export default function Home() {
         ? p.name.toLowerCase().includes(s) || p.specialties.some((x) => x.toLowerCase().includes(s))
         : true;
       const matchesCategories = categories.length > 0 ? categories.every((c) => p.specialties.includes(c)) : true;
-      return matchesSearch && matchesCategories;
+      const matchesModalities = modalities.length > 0 ? modalities.some((m) => p.modalities.includes(m)) : true;
+      return matchesSearch && matchesCategories && matchesModalities;
     });
-  }, [search, categories, psychologists]);
+  }, [search, categories, modalities, psychologists]);
 
   function toggleCategory(category: string) {
     setCategories((prev) => (prev.includes(category) ? prev.filter((c) => c !== category) : [...prev, category]));
+  }
+
+  function toggleModality(modality: "Online" | "Presencial") {
+    setModalities((prev) => (prev.includes(modality) ? prev.filter((m) => m !== modality) : [...prev, modality]));
   }
 
   return (
@@ -64,6 +71,8 @@ export default function Home() {
         <Filters
           onSearchChange={setSearch}
           onCategoryToggle={toggleCategory}
+          onModalityToggle={toggleModality}
+          activeModalities={modalities}
           activeCategories={categories}
           search={search}
         />

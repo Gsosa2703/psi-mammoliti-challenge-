@@ -6,6 +6,7 @@
     "experienceYears": 12,
     "sessionMinutes": 50,
     "priceUSD": 60,
+    "modalities": ["Online", "Presencial"],
     "specialties": ["Ansiedad", "Duelo", "Estrés laboral"],
     "bio": "Psicóloga clínica con enfoque cognitivo-conductual. Trabajo con personas adultas que buscan herramientas prácticas para mejorar su bienestar emocional.",
     "weeklyAvailability": {
@@ -25,6 +26,7 @@
     "experienceYears": 8,
     "sessionMinutes": 50,
     "priceUSD": 55,
+    "modalities": ["Online"],
     "specialties": ["Depresión", "Ansiedad", "Autoestima"],
     "bio": "Terapeuta integrativo con experiencia acompañando transiciones vitales y fortaleciendo recursos personales.",
     "weeklyAvailability": {
@@ -44,6 +46,7 @@
     "experienceYears": 10,
     "sessionMinutes": 50,
     "priceUSD": 65,
+    "modalities": ["Presencial"],
     "specialties": ["Terapia de pareja", "Comunicación", "Autoestima"],
     "bio": "Especialista en vínculos y terapia de pareja, con foco en comunicación saludable y resolución de conflictos.",
     "weeklyAvailability": {
@@ -63,6 +66,7 @@
     "experienceYears": 15,
     "sessionMinutes": 50,
     "priceUSD": 70,
+    "modalities": ["Online", "Presencial"],
     "specialties": ["Estrés laboral", "Burnout", "Ansiedad"],
     "bio": "Acompaño procesos de cambio laboral y manejo del estrés con técnicas basadas en evidencia.",
     "weeklyAvailability": {
@@ -82,6 +86,7 @@
     "experienceYears": 9,
     "sessionMinutes": 50,
     "priceUSD": 58,
+    "modalities": ["Online"],
     "specialties": ["Duelo", "Depresión", "Ansiedad"],
     "bio": "Brindo un espacio empático para transitar procesos de pérdida y construir nuevos significados.",
     "weeklyAvailability": {
@@ -101,6 +106,7 @@
     "experienceYears": 7,
     "sessionMinutes": 50,
     "priceUSD": 50,
+    "modalities": ["Online"],
     "specialties": ["Ansiedad", "Autoestima", "Habilidades sociales"],
     "bio": "Trabajo con jóvenes adultos para desarrollar hábitos saludables, autoestima y gestión de emociones.",
     "weeklyAvailability": {

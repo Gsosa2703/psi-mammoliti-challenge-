@@ -5,12 +5,14 @@ import categoriesJson from "@/data/categories.json";
 type FiltersProps = {
   onSearchChange: (value: string) => void;
   onCategoryToggle: (category: string) => void;
+  onModalityToggle?: (modality: "Online" | "Presencial") => void;
+  activeModalities?: Array<"Online" | "Presencial">;
   activeCategories: string[];
   search: string;
 };
 
 export default function Filters(props: FiltersProps) {
-  const { onSearchChange, onCategoryToggle, activeCategories, search } = props;
+  const { onSearchChange, onCategoryToggle, activeCategories, search, onModalityToggle, activeModalities = [] } = props;
   const [query, setQuery] = useState(search);
 
   useEffect(() => setQuery(search), [search]);
@@ -39,8 +41,38 @@ export default function Filters(props: FiltersProps) {
         </button>
       </div>
 
+      {/* Modality */}
+      <div className="mt-4">
+        <div className="mb-2 flex items-center gap-2 text-sm font-medium">
+          <span className="text-black/80 dark:text-white/80">Modalidad</span>
+        </div>
+        <div className="flex gap-2">
+          {["Online", "Presencial"].map((m) => {
+            const typed = m as "Online" | "Presencial";
+            const active = activeModalities.includes(typed);
+            return (
+              <button
+                key={m}
+                onClick={() => onModalityToggle?.(typed)}
+                className={
+                  "flex items-center gap-2 rounded-md border px-3 py-2 text-xs transition " +
+                  (active
+                    ? (m === "Online"
+                        ? "border-blue-500 bg-blue-500/10 text-blue-700 dark:text-blue-300"
+                        : "border-emerald-500 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300")
+                    : "border-black/15 text-black/80 hover:border-black/30 dark:border-white/20 dark:text-white/80 dark:hover:border-white/40")
+                }
+              >
+                <span className={m === "Online" ? "h-2 w-2 rounded-full bg-blue-500" : "h-2 w-2 rounded-full bg-emerald-500"} />
+                {m}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
       <div className="mt-3 flex flex-wrap items-center gap-2">
-        <span className="text-xs text-black/60 dark:text-white/60">Especialidad</span>
+        <span className="text-xs text-black/60 dark:text-white/60">Especialidades</span>
         {categories.map((category) => {
           const active = activeCategories.includes(category);
           return (
@@ -48,12 +80,13 @@ export default function Filters(props: FiltersProps) {
               key={category}
               onClick={() => onCategoryToggle(category)}
               className={
-                "rounded-md border px-2 py-1 text-xs transition " +
+                "flex items-center gap-2 rounded-md border px-2 py-1 text-xs transition " +
                 (active
-                  ? "border-black bg-black text-white dark:border-white dark:bg-white dark:text-black"
+                  ? "border-violet-500 bg-violet-500/10 text-violet-700 dark:text-violet-300"
                   : "border-black/15 text-black/80 hover:border-black/30 dark:border-white/20 dark:text-white/80 dark:hover:border-white/40")
               }
             >
+              <span className="h-2 w-2 rounded-full bg-violet-500" />
               {category}
             </button>
           );
