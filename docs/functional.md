@@ -18,55 +18,49 @@ Permitir que pacientes encuentren psicólogos por temática y agenden sesiones o
 
 - Opcion de ver sesiones guardadas, cancelarlas o guardarlas
 
-3. Perfiles de usuario
+## Perfiles de usuario
 
 Paciente: busca, filtra, ve disponibilidad y agenda.
 
-Psicólogo (simulado): sólo lectura en este MVP (datos mock).
+Psicólogo: sólo lectura en este MVP (datos mock).
 
-4. Flujos cubiertos
-   4.1 Búsqueda y Filtro
+## Flujos cubiertos
 
-Usuario ingresa a Home.
+- Búsqueda y Filtro
 
-Selecciona temática (chips o dropdown).
+1. Usuario ingresa a Home.
+2. Selecciona temática (puede seleccionar el badge o escribirlo)
+3. Selecciona modalidad: Online / Presencial
+4. Ve tarjetas con modalidad y próxima disponibilidad
+   Criterios de aceptación
 
-(Día 2) Selecciona modalidad: Online / Presencial / (Ambas).
+- Dado un filtro de temática “Ansiedad”, el listado muestra sólo psicólogos que la atienden.
+- Dado un filtro de modalidad “Online”, se listan psicólogos con online disponible.
 
-Ve tarjetas con modalid﻿ad y próxima disponibilidad.
+- Detalle + Disponibilidad por modalidad
 
-Criterios de aceptación
+1. Usuario entra al perfil.
+2. Ve bio, especialidades y toggle/pestañas: Online | Presencial.
+3. Calendario semanal muestra slots de la modalidad seleccionada, en el huso del paciente.
+   Criterios de aceptación
 
-Dado un filtro de temática “Ansiedad”, el listado muestra sólo psicólogos que la atienden.
+- Si el psicólogo tiene slots “Online” lunes 09:00 y “Presencial” lunes 11:00, al cambiar de pestaña cambian los slots
+- Los horarios se renderizan en la zona horaria del navegador del usuario.
 
-Dado un filtro de modalidad “Online”, se listan psicólogos con online disponible.
+- Reserva simulada
 
-4.2 Detalle + Disponibilidad por modalidad
+1. Usuario elige un slot.
+2. Pantalla de Confirmación: psicólogo, modalidad, fecha/hora (con TZ).
+3. Botón Confirmar → pantalla Éxito.
+   Criterios de aceptación
 
-Usuario entra al perfil.
+- Tras confirmar, se muestra mensaje de éxito con modalidad y fecha/hora.
 
-Ve bio, especialidades y toggle/pestañas: Online | Presencial.
+- Reserva simulada
 
-Calendario semanal muestra slots de la modalidad seleccionada, en el huso del paciente.
+1. Usuario elige un slot.
+2. Pantalla de Confirmación: psicólogo, modalidad, fecha/hora (con TZ).
+3. Botón Confirmar → pantalla Éxito.
+   Criterios de aceptación
 
-Criterios de aceptación
-
-Si el psicólogo tiene slots “Online” lunes 09:00 y “Presencial” lunes 11:00, al cambiar de pestaña cambian los slots.
-
-Los horarios se renderizan en la zona horaria del navegador del usuario.
-
-4.3 Reserva simulada
-
-Usuario elige un slot.
-
-Pantalla de Confirmación: psicólogo, modalidad, fecha/hora (con TZ).
-
-Botón Confirmar → pantalla Éxito.
-
-(Bonus) Guardar en localStorage.
-
-Criterios de aceptación
-
-Tras confirmar, se muestra mensaje de éxito con modalidad y fecha/hora.
-
-(Bonus) La reserva aparece en “Mis sesiones” (si implementado).
+- Tras confirmar, se muestra mensaje de éxito con modalidad y fecha/hora.

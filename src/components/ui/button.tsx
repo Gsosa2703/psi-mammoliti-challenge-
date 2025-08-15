@@ -1,6 +1,5 @@
 import { cn } from "@/lib/utils";
-import { ButtonHTMLAttributes, DetailedHTMLProps } from "react";
-import Link from "next/link";
+import { ButtonHTMLAttributes } from "react";
 
 type ButtonPropsBase = ButtonHTMLAttributes<HTMLButtonElement> & {
   variant?: "default" | "outline" | "ghost";
@@ -24,6 +23,7 @@ export function Button({ className, variant = "default", size = "md", asChild, .
   if (asChild) {
     // Consumers can use asChild with Next Link by passing children=<Link/>.
     return (
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       <span className={cn(base, variants[variant], sizes[size], className)}>{(props as any).children}</span>
     );
   }
