@@ -7,8 +7,10 @@ Aplicación demo para descubrir psicólogos, ver disponibilidad de turnos y rese
 ## Instrucciones de uso
 
 - Requisitos
+
   - Node 18+ (sugerido 20+)
-- Desarrollo
+
+- Local
 
 ```bash
 npm install
@@ -30,43 +32,23 @@ npm run build
 npm start
 ```
 
-- Despliegue (recomendado): Vercel
-  - Conectar el repo y “Deploy”. No requiere variables de entorno en esta demo.
+- Deploy (recomendado): Vercel
+  - Conectar el repo y “Deploy”. No requiere variables de entorno en esta demo. Link: https://psi-mammoliti-challenge-j3we.vercel.app/
 
 ## Stack técnico y decisiones
 
-- Next.js (15)
-  - Elegido por: enrutamiento de archivos, Server/Client Components, despliegue 1-click en Vercel, soporte a SSR/ISR para escalar catálogos y listados.
-  - Vercel: CDN global, previews por PR, logs/observabilidad, edge functions si fuera necesario (futuros webhooks y schedulers).
-- TypeScript
-  - Tipado fuerte para modelos (`AvailabilitySlot`, `WeeklyAvailability`, `Psychologist`, `ScheduledSession`) y props de componentes.
-  - Reduce errores en refactors y facilita documentación viviente.
-- Tailwind CSS + shadcn/ui
-  - Tailwind para composición rápida de UI, dark mode, clases utilitarias.
-  - shadcn/ui como estilo de componentes ligeros y consistentes (`button`, `dialog`, `input`, `textarea`, `label`, `calendar`).
-- dayjs
-  - Manejo confiable de fechas, formateo por locale, y conversiones UTC⇄local.
-  - Decisión clave: guardar horarios de disponibilidad en UTC ISO y renderizar en hora local del usuario.
-- Almacenamiento cliente (localStorage)
-  - Persistimos las reservas del usuario en `localStorage` (no hay backend en esta demo).
+- Next.js 15 + Vercel: enrutamiento por archivos, SSR/ISR, deploy 1-click.
+
+- TypeScript: tipado fuerte de modelos y props.
+
+- Tailwind CSS + shadcn/ui: UI rápida y consistente.
+
+- dayjs (UTC ⇄ TZ local): horarios consistentes sin sorpresas por husos/DST.
+
+- localStorage: persistencia de reservas del usuario (sin backend en el MVP).
 
 ## Modelos de datos
 
-- AvailabilitySlot
-
-  ```ts
-  type AvailabilitySlot = {
-  id: string;
-  psychologistId: string;
-  modality: Modality;
-  date: string;
-  status: 'free' | 'held' | 'booked' | 'canceled';
-  };
-  ```
-
-- WeeklyAvailability
-  - `online?: Partial<Record<Weekday, string[]>>` y `presencial?: ...` con horas "HH:MM" locales por día.
-  - Se usa para generar slots para un rango de fechas.
 - Psychologist
 
   - Modelo base del profesional. Campos principales y opcionales que usa la app:
@@ -92,13 +74,21 @@ npm start
     - Si `slots` está presente, se utiliza directamente. Si no, se generan slots a partir de `weeklyAvailability` para la ventana visible (90 días).
     - El flag `limited` se calcula en runtime según la cantidad de slots libres (<= 5) y la(s) modalidad(es) filtradas por el usuario.
 
-## Disponibilidad y fechas
+- AvailabilitySlot
 
-- Generación de slots: `generateSlotsFromWeekly(weekly, psychologistId, from, to)` transforma una plantilla semanal en muchos `AvailabilitySlot` (en UTC) para el rango solicitado (90 días por defecto en la UI).
-- Agrupación y rendering: `groupSlotsByDateAndModality(slots)` devuelve los slots agrupados por día y modalidad para pintar el calendario y los horarios disponibles.
-- Etiquetas de hora: `formatLocalTimeLabel(isoUtc)` presenta "HH:mm" en la zona local del usuario.
-- Clave de día: `formatDateKey(date)` produce `YYYY-MM-DD` y permite deshabilitar días sin disponibilidad en el calendario.
-- Timezones: los horarios se guardan en UTC para integridad; se muestran en local. Esto evita inconsistencias por cambios de TZ o DST.
+  ```ts
+  type AvailabilitySlot = {
+  id: string;
+  psychologistId: string;
+  modality: Modality;
+  date: string;
+  status: 'free' | 'held' | 'booked' | 'canceled';
+  };
+  ```
+
+- WeeklyAvailability
+  - `online?: Partial<Record<Weekday, string[]>>` y `presencial?: ...` con horas "HH:MM" locales por día.
+  - Se usa para generar slots para un rango de fechas.
 
 ## Funcionalidades principales
 

@@ -149,11 +149,10 @@ export default function ProfessionalPage() {
               ))}
             </div>
           </div>
-          <div className="mt-4 space-y-3">
-            <div className="h-3 w-full rounded bg-black/10 dark:bg-white/10" />
-            <div className="h-3 w-11/12 rounded bg-black/10 dark:bg-white/10" />
-            <div className="h-3 w-4/5 rounded bg-black/10 dark:bg-white/10" />
-          </div>
+          <section className="mt-4 rounded-2xl border border-black/10 p-3 dark:border-white/10">
+            <h3 className="text-sm font-semibold">Sobre mi</h3>
+            <p className="mt-2 text-sm text-black/70 dark:text-white/70">{prof.bio}</p>
+          </section>
         </div>
         <div className="rounded-2xl border border-black/10 p-4 dark:border-white/10">
           <h3 className="text-sm font-semibold">Próxima disponibilidad</h3>

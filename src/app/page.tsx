@@ -61,14 +61,28 @@ export default function Home() {
 
   return (
     <main className="w-full">
-      {/* Hero full-width with inner container */}
-      <header className="w-full bg-amber-300 py-10 text-center text-black dark:text-black">
-        <div className="mx-auto max-w-6xl px-4">
-        <h1 className="text-lg font-semibold">Encuentra tu psicólogo ideal</h1>
-        <p className="mt-2 text-sm opacity-80">Conecta con profesionales de la salud mental certificados. Tu bienestar emocional es nuestra prioridad.</p>
-        <div className="mt-4">
-          <a href="#list" className="inline-block rounded-xl bg-black px-4 py-2 text-sm font-medium text-white">Ver Psicólogos</a>
-        </div>
+      {/* Hero full-width with background image and overlay */}
+      <header
+        className="relative w-full py-30 text-center text-white sm:py-28"
+        style={{
+          backgroundImage:
+            "url('https://www.shutterstock.com/image-vector/metaphor-bipolar-disorder-mind-mental-260nw-2372657385.jpg')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+      >
+        <div className="absolute inset-0 bg-black/50" />
+        <div className="relative z-10 mx-auto max-w-6xl px-4">
+          <h1 className="text-2xl font-semibold sm:text-3xl">Encuentra tu psicólogo ideal</h1>
+          <p className="mt-3 text-sm opacity-90 sm:text-base">Conecta con profesionales de la salud mental certificados. Tu bienestar emocional es nuestra prioridad.</p>
+          <div className="mt-6">
+            <a
+              href="#list"
+              className="inline-block rounded-xl bg-white px-5 py-2 text-sm font-medium text-black shadow-lg shadow-black/30 dark:bg-white dark:text-black"
+            >
+              Ver Psicólogos
+            </a>
+          </div>
         </div>
       </header>
 
