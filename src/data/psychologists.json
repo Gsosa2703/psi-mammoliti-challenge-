@@ -10,13 +10,24 @@
     "specialties": ["Ansiedad", "Duelo", "Estrés laboral"],
     "bio": "Psicóloga clínica con enfoque cognitivo-conductual. Trabajo con personas adultas que buscan herramientas prácticas para mejorar su bienestar emocional.",
     "weeklyAvailability": {
-      "mon": ["09:00", "12:00", "15:00"],
-      "tue": ["10:00", "13:00", "16:00"],
-      "wed": ["09:00", "12:00", "15:00"],
-      "thu": ["09:00", "12:00", "15:00"],
-      "fri": ["10:00", "13:00"],
-      "sat": [],
-      "sun": []
+      "online": {
+        "mon": ["09:00", "12:00", "15:00"],
+        "tue": ["10:00", "13:00", "16:00"],
+        "wed": ["09:00", "12:00", "15:00"],
+        "thu": ["09:00", "12:00", "15:00"],
+        "fri": ["10:00", "13:00"],
+        "sat": [],
+        "sun": []
+      },
+      "presencial": {
+        "mon": ["11:00", "14:00"],
+        "tue": ["10:00"],
+        "wed": ["11:00", "14:00"],
+        "thu": ["10:00"],
+        "fri": [],
+        "sat": [],
+        "sun": []
+      }
     }
   },
   {
@@ -30,13 +41,24 @@
     "specialties": ["Depresión", "Ansiedad", "Autoestima"],
     "bio": "Terapeuta integrativo con experiencia acompañando transiciones vitales y fortaleciendo recursos personales.",
     "weeklyAvailability": {
-      "mon": ["10:00", "14:00"],
-      "tue": ["09:00", "12:00", "15:00"],
-      "wed": ["10:00", "13:00"],
-      "thu": ["09:00", "12:00", "15:00"],
-      "fri": ["09:00", "11:00", "13:00"],
-      "sat": [],
-      "sun": []
+      "online": {
+        "mon": ["10:00", "14:00"],
+        "tue": ["09:00", "12:00", "15:00"],
+        "wed": ["10:00", "13:00"],
+        "thu": ["09:00", "12:00", "15:00"],
+        "fri": ["09:00", "11:00", "13:00"],
+        "sat": [],
+        "sun": []
+      },
+      "presencial": {
+        "mon": [],
+        "tue": ["11:00"],
+        "wed": ["12:00"],
+        "thu": [],
+        "fri": ["12:00"],
+        "sat": [],
+        "sun": []
+      }
     }
   },
   {
@@ -50,13 +72,24 @@
     "specialties": ["Terapia de pareja", "Comunicación", "Autoestima"],
     "bio": "Especialista en vínculos y terapia de pareja, con foco en comunicación saludable y resolución de conflictos.",
     "weeklyAvailability": {
-      "mon": ["09:00", "12:00"],
-      "tue": ["11:00", "14:00", "17:00"],
-      "wed": ["09:00", "12:00"],
-      "thu": ["10:00", "13:00"],
-      "fri": ["09:00", "12:00"],
-      "sat": ["10:00"],
-      "sun": []
+      "online": {
+        "mon": ["09:00", "12:00"],
+        "tue": ["11:00", "14:00", "17:00"],
+        "wed": ["09:00", "12:00"],
+        "thu": ["10:00", "13:00"],
+        "fri": ["09:00", "12:00"],
+        "sat": ["10:00"],
+        "sun": []
+      },
+      "presencial": {
+        "mon": ["10:00"],
+        "tue": [],
+        "wed": ["11:00"],
+        "thu": [],
+        "fri": ["10:00"],
+        "sat": [],
+        "sun": []
+      }
     }
   },
   {
@@ -70,13 +103,24 @@
     "specialties": ["Estrés laboral", "Burnout", "Ansiedad"],
     "bio": "Acompaño procesos de cambio laboral y manejo del estrés con técnicas basadas en evidencia.",
     "weeklyAvailability": {
-      "mon": ["08:00", "11:00", "14:00"],
-      "tue": ["09:00", "12:00"],
-      "wed": ["10:00", "13:00", "16:00"],
-      "thu": ["09:00", "12:00"],
-      "fri": ["09:00", "12:00", "15:00"],
-      "sat": [],
-      "sun": []
+      "online": {
+        "mon": ["08:00", "11:00", "14:00"],
+        "tue": ["09:00", "12:00"],
+        "wed": ["10:00", "13:00", "16:00"],
+        "thu": ["09:00", "12:00"],
+        "fri": ["09:00", "12:00", "15:00"],
+        "sat": [],
+        "sun": []
+      },
+      "presencial": {
+        "mon": ["11:00", "15:00"],
+        "tue": [],
+        "wed": ["12:00"],
+        "thu": ["10:00"],
+        "fri": [],
+        "sat": [],
+        "sun": []
+      }
     }
   },
   {
@@ -90,13 +134,24 @@
     "specialties": ["Duelo", "Depresión", "Ansiedad"],
     "bio": "Brindo un espacio empático para transitar procesos de pérdida y construir nuevos significados.",
     "weeklyAvailability": {
-      "mon": ["10:00", "12:00"],
-      "tue": ["09:00", "11:00", "13:00"],
-      "wed": ["10:00", "12:00"],
-      "thu": ["09:00", "12:00", "15:00"],
-      "fri": ["10:00", "13:00"],
-      "sat": [],
-      "sun": []
+      "online": {
+        "mon": ["10:00", "12:00"],
+        "tue": ["09:00", "11:00", "13:00"],
+        "wed": ["10:00", "12:00"],
+        "thu": ["09:00", "12:00", "15:00"],
+        "fri": ["10:00", "13:00"],
+        "sat": [],
+        "sun": []
+      },
+      "presencial": {
+        "mon": [],
+        "tue": ["12:00"],
+        "wed": [],
+        "thu": ["11:00"],
+        "fri": [],
+        "sat": [],
+        "sun": []
+      }
     }
   },
   {
@@ -110,13 +165,24 @@
     "specialties": ["Ansiedad", "Autoestima", "Habilidades sociales"],
     "bio": "Trabajo con jóvenes adultos para desarrollar hábitos saludables, autoestima y gestión de emociones.",
     "weeklyAvailability": {
-      "mon": ["09:00", "12:00"],
-      "tue": ["10:00", "13:00"],
-      "wed": ["09:00", "12:00", "15:00"],
-      "thu": ["10:00", "13:00"],
-      "fri": ["09:00", "12:00"],
-      "sat": ["11:00"],
-      "sun": []
+      "online": {
+        "mon": ["09:00", "12:00"],
+        "tue": ["10:00", "13:00"],
+        "wed": ["09:00", "12:00", "15:00"],
+        "thu": ["10:00", "13:00"],
+        "fri": ["09:00", "12:00"],
+        "sat": ["11:00"],
+        "sun": []
+      },
+      "presencial": {
+        "mon": [],
+        "tue": [],
+        "wed": ["11:00"],
+        "thu": [],
+        "fri": ["10:00"],
+        "sat": [],
+        "sun": []
+      }
     }
   }
 ]

@@ -9,7 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { notFound, useParams } from "next/navigation";
 
-type WeeklyAvailability = {
+type DaySlots = {
   mon: string[];
   tue: string[];
   wed: string[];
@@ -17,6 +17,11 @@ type WeeklyAvailability = {
   fri: string[];
   sat: string[];
   sun: string[];
+};
+
+type WeeklyAvailability = {
+  online: DaySlots;
+  presencial: DaySlots;
 };
 
 type Psychologist = {
@@ -39,6 +44,8 @@ export default function ProfessionalPage() {
   if (!prof) notFound();
 
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  const initialModality: "Online" | "Presencial" = (prof?.modalities?.includes("Online") ? "Online" : "Presencial");
+  const [selectedModality, setSelectedModality] = useState<"Online" | "Presencial">(initialModality);
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
   const [form, setForm] = useState({ name: "", email: "", phone: "", motive: "" });
   const [confirmation, setConfirmation] = useState<string | null>(null);
@@ -48,13 +55,21 @@ export default function ProfessionalPage() {
     const mondayBased = (jsDow + 6) % 7;
     const keys = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"] as const;
     const key = keys[mondayBased];
-    return (prof?.weeklyAvailability?.[key] as string[] | undefined) ?? [];
-  }, [selectedDate, prof]);
+    if (!prof?.modalities?.includes(selectedModality)) return [] as string[];
+    const modalityKey = selectedModality === "Online" ? "online" : "presencial";
+    const slots = prof?.weeklyAvailability?.[modalityKey]?.[key];
+    return (slots as string[] | undefined) ?? [];
+  }, [selectedDate, prof, selectedModality]);
+
+  function changeModality(mod: "Online" | "Presencial") {
+    setSelectedModality(mod);
+    setSelectedTime(null);
+  }
 
   function submit() {
     if (!selectedTime || !form.name || !form.email) return;
     const readable = `${selectedDate.toLocaleDateString(undefined, { weekday: "long", day: "2-digit", month: "long" })} ${selectedTime}`;
-    setConfirmation(`Listo, reservaste con ${prof?.name ?? ""} para ${readable}. Recibirás un email de confirmación (simulado).`);
+    setConfirmation(`Listo, reservaste (${selectedModality}) con ${prof?.name ?? ""} para ${readable}. Recibirás un email de confirmación (simulado).`);
   }
 
   return (
@@ -81,6 +96,27 @@ export default function ProfessionalPage() {
                 <div className="text-xs text-black/60 dark:text-white/60">{prof.sessionMinutes} min</div>
               </div>
             </div>
+            {prof.modalities?.length ? (
+              <div className="mt-2 flex flex-wrap gap-2">
+                {prof.modalities.includes("Online") && (
+                  <span className="inline-flex items-center gap-1 rounded-full border border-blue-300 bg-blue-50 px-2.5 py-1 text-[10px] font-medium text-blue-700 dark:border-blue-400/40 dark:bg-blue-500/10 dark:text-blue-300">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-3 w-3">
+                      <path d="M3 5.25A2.25 2.25 0 0 1 5.25 3h13.5A2.25 2.25 0 0 1 21 5.25v8.25A2.25 2.25 0 0 1 18.75 15H5.25A2.25 2.25 0 0 1 3 13.5V5.25z"/>
+                      <path d="M6 18.75A.75.75 0 0 1 6.75 18h10.5a.75.75 0 0 1 0 1.5H6.75A.75.75 0 0 1 6 18.75z"/>
+                    </svg>
+                    Online
+                  </span>
+                )}
+                {prof.modalities.includes("Presencial") && (
+                  <span className="inline-flex items-center gap-1 rounded-full border border-emerald-300 bg-emerald-50 px-2.5 py-1 text-[10px] font-medium text-emerald-700 dark:border-emerald-400/40 dark:bg-emerald-500/10 dark:text-emerald-300">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-3 w-3">
+                      <path fill-rule="evenodd" d="M12 2.25c-4.28 0-7.75 3.47-7.75 7.75 0 4.12 3.19 8.48 6.33 10.96.85.67 1.99.67 2.84 0 3.14-2.48 6.33-6.84 6.33-10.96 0-4.28-3.47-7.75-7.75-7.75zm0 10.25a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z" clip-rule="evenodd"/>
+                    </svg>
+                    Presencial
+                  </span>
+                )}
+              </div>
+            ) : null}
             <div className="mt-2 flex flex-wrap gap-1">
               {prof.specialties.map((s) => (
                 <span key={s} className="rounded-md border border-black/10 px-2 py-1 text-[10px] text-black/70 dark:border-white/20 dark:text-white/70">
@@ -97,21 +133,82 @@ export default function ProfessionalPage() {
         </div>
         <div className="rounded-2xl border border-black/10 p-4 dark:border-white/10">
           <h3 className="text-sm font-semibold">Próxima disponibilidad</h3>
+          <div className="mt-2 flex gap-2">
+            <Button
+              size="sm"
+              variant={selectedModality === "Online" ? "default" : "outline"}
+              onClick={() => changeModality("Online")}
+              disabled={!prof.modalities.includes("Online")}
+            >
+              Online
+            </Button>
+            <Button
+              size="sm"
+              variant={selectedModality === "Presencial" ? "default" : "outline"}
+              onClick={() => changeModality("Presencial")}
+              disabled={!prof.modalities.includes("Presencial")}
+            >
+              Presencial
+            </Button>
+          </div>
           <div className="mt-3">
             <Calendar value={selectedDate} onChange={setSelectedDate} />
           </div>
           <div className="mt-3">
-            <div className="text-xs text-black/60 dark:text-white/60">Selecciona tu horario</div>
+            <div className="text-xs text-black/60 dark:text-white/60">Selecciona tu horario ({selectedModality})</div>
           </div>
-          <div className="mt-2 flex flex-wrap gap-2">
+          <div className="mt-2 space-y-2">
             {timesForSelectedDay.length === 0 && (
               <span className="text-xs text-black/60 dark:text-white/60">Sin turnos para ese día</span>
             )}
-            {timesForSelectedDay.map((t) => (
-              <Button key={t} size="sm" variant={t === selectedTime ? "default" : "outline"} onClick={() => setSelectedTime(t)}>
-                {t}
-              </Button>
-            ))}
+            {selectedModality === "Online" && prof.modalities.includes("Online") && (
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="mr-1 inline-flex items-center gap-1 text-[10px] text-blue-700 dark:text-blue-300">
+                  <span className="h-2 w-2 rounded-full bg-blue-500" /> Online
+                </span>
+                {timesForSelectedDay.map((t) => (
+                  <Button
+                    key={`on-${t}`}
+                    size="sm"
+                    variant="outline"
+                    onClick={() => {
+                      setSelectedTime(t);
+                    }}
+                    className={
+                      (selectedTime === t && selectedModality === "Online")
+                        ? "border-blue-600 bg-blue-600 text-white"
+                        : "border-blue-300 bg-blue-50 text-blue-700 dark:border-blue-400/40 dark:bg-blue-500/10 dark:text-blue-300"
+                    }
+                  >
+                    {t}
+                  </Button>
+                ))}
+              </div>
+            )}
+            {selectedModality === "Presencial" && prof.modalities.includes("Presencial") && (
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="mr-1 inline-flex items-center gap-1 text-[10px] text-emerald-700 dark:text-emerald-300">
+                  <span className="h-2 w-2 rounded-full bg-emerald-500" /> Presencial
+                </span>
+                {timesForSelectedDay.map((t) => (
+                  <Button
+                    key={`pr-${t}`}
+                    size="sm"
+                    variant="outline"
+                    onClick={() => {
+                      setSelectedTime(t);
+                    }}
+                    className={
+                      (selectedTime === t && selectedModality === "Presencial")
+                        ? "border-emerald-600 bg-emerald-600 text-white"
+                        : "border-emerald-300 bg-emerald-50 text-emerald-700 dark:border-emerald-400/40 dark:bg-emerald-500/10 dark:text-emerald-300"
+                    }
+                  >
+                    {t}
+                  </Button>
+                ))}
+              </div>
+            )}
           </div>
 
           <h3 className="mt-5 text-sm font-semibold">Información Personal</h3>
