@@ -9,21 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { notFound, useParams } from "next/navigation";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-
-type DaySlots = {
-  mon: string[];
-  tue: string[];
-  wed: string[];
-  thu: string[];
-  fri: string[];
-  sat: string[];
-  sun: string[];
-};
-
-type WeeklyAvailability = {
-  online: DaySlots;
-  presencial: DaySlots;
-};
+import { AvailabilitySlot, WeeklyAvailability, formatDateKey, generateSlotsFromWeekly, groupSlotsByDateAndModality, formatLocalTimeLabel } from "@/lib/availability";
 
 type Psychologist = {
   id: string;
@@ -35,7 +21,8 @@ type Psychologist = {
   sessionMinutes: number;
   priceUSD: number;
   bio: string;
-  weeklyAvailability: WeeklyAvailability;
+  weeklyAvailability?: WeeklyAvailability;
+  slots?: AvailabilitySlot[];
 };
 
 export default function ProfessionalPage() {
@@ -66,16 +53,17 @@ export default function ProfessionalPage() {
     }
   }, []);
 
-  const timesForSelectedDay = useMemo(() => {
-    const jsDow = selectedDate.getDay();
-    const mondayBased = (jsDow + 6) % 7;
-    const keys = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"] as const;
-    const key = keys[mondayBased];
-    if (!prof?.modalities?.includes(selectedModality)) return [] as string[];
-    const modalityKey = selectedModality === "Online" ? "online" : "presencial";
-    const slots = prof?.weeklyAvailability?.[modalityKey]?.[key];
-    return (slots as string[] | undefined) ?? [];
-  }, [selectedDate, prof, selectedModality]);
+  const grouped = useMemo(() => {
+    const from = new Date();
+    const to = new Date(Date.now() + 1000 * 60 * 60 * 24 * 90);
+    const slots = prof.slots ?? generateSlotsFromWeekly(prof.weeklyAvailability, prof.id, from, to);
+    return groupSlotsByDateAndModality(slots);
+  }, [prof]);
+
+  const slotsForSelectedDay = useMemo(() => {
+    const key = formatDateKey(selectedDate);
+    return selectedModality === "Online" ? (grouped.online[key] ?? []) : (grouped.presencial[key] ?? []);
+  }, [selectedDate, selectedModality, grouped]);
 
   function changeModality(mod: "Online" | "Presencial") {
     setSelectedModality(mod);
@@ -84,7 +72,7 @@ export default function ProfessionalPage() {
 
   function submit() {
     if (!selectedTime || !form.name || !form.email) return;
-    const readable = `${selectedDate.toLocaleDateString(undefined, { weekday: "long", day: "2-digit", month: "long" })} ${selectedTime}`;
+    const readable = `${selectedDate.toLocaleDateString(undefined, { weekday: "long", day: "2-digit", month: "long" })} ${formatLocalTimeLabel(selectedTime)}`;
     setConfirmation(`Listo, reservaste (${selectedModality}) con ${prof?.name ?? ""} para ${readable}. Recibirás un email de confirmación (simulado).`);
     setOpenConfirm(true);
   }
@@ -170,14 +158,25 @@ export default function ProfessionalPage() {
             </Button>
           </div>
           <div className="mt-3">
-            <Calendar value={selectedDate} onChange={setSelectedDate} minDate={new Date()} />
+            <Calendar
+              value={selectedDate}
+              onChange={setSelectedDate}
+              minDate={new Date()}
+              maxDate={new Date(Date.now() + 1000 * 60 * 60 * 24 * 90)}
+              isDateDisabled={(d) => {
+                const key = formatDateKey(d);
+                return selectedModality === "Online"
+                  ? !(key in grouped.online)
+                  : !(key in grouped.presencial);
+              }}
+            />
           </div>
           <div className="mt-3">
             <div className="text-xs text-black/60 dark:text-white/60">Selecciona tu horario ({selectedModality})</div>
             <div className="mt-1 text-[10px] text-black/50 dark:text-white/50">Horarios mostrados en tu zona: {userTimezone}</div>
           </div>
           <div className="mt-2 space-y-2">
-            {timesForSelectedDay.length === 0 && (
+            {slotsForSelectedDay.length === 0 && (
               <span className="text-xs text-black/60 dark:text-white/60">Sin turnos para ese día</span>
             )}
             {selectedModality === "Online" && prof.modalities.includes("Online") && (
@@ -185,21 +184,21 @@ export default function ProfessionalPage() {
                 <span className="mr-1 inline-flex items-center gap-1 text-[10px] text-blue-700 dark:text-blue-300">
                   <span className="h-2 w-2 rounded-full bg-blue-500" /> Online
                 </span>
-                {timesForSelectedDay.map((t) => (
+                {slotsForSelectedDay.map((slot) => (
                   <Button
-                    key={`on-${t}`}
+                    key={slot.id}
                     size="sm"
                     variant="outline"
                     onClick={() => {
-                      setSelectedTime(t);
+                      setSelectedTime(slot.date);
                     }}
                     className={
-                      (selectedTime === t && selectedModality === "Online")
+                      (selectedTime === slot.date && selectedModality === "Online")
                         ? "border-blue-600 bg-blue-600 text-white"
                         : "border-blue-300 bg-blue-50 text-blue-700 dark:border-blue-400/40 dark:bg-blue-500/10 dark:text-blue-300"
                     }
                   >
-                    {t}
+                    {formatLocalTimeLabel(slot.date)}
                   </Button>
                 ))}
               </div>
@@ -209,21 +208,21 @@ export default function ProfessionalPage() {
                 <span className="mr-1 inline-flex items-center gap-1 text-[10px] text-emerald-700 dark:text-emerald-300">
                   <span className="h-2 w-2 rounded-full bg-emerald-500" /> Presencial
                 </span>
-                {timesForSelectedDay.map((t) => (
+                {slotsForSelectedDay.map((slot) => (
                   <Button
-                    key={`pr-${t}`}
+                    key={slot.id}
                     size="sm"
                     variant="outline"
                     onClick={() => {
-                      setSelectedTime(t);
+                      setSelectedTime(slot.date);
                     }}
                     className={
-                      (selectedTime === t && selectedModality === "Presencial")
+                      (selectedTime === slot.date && selectedModality === "Presencial")
                         ? "border-emerald-600 bg-emerald-600 text-white"
                         : "border-emerald-300 bg-emerald-50 text-emerald-700 dark:border-emerald-400/40 dark:bg-emerald-500/10 dark:text-emerald-300"
                     }
                   >
-                    {t}
+                    {formatLocalTimeLabel(slot.date)}
                   </Button>
                 ))}
               </div>

@@ -1,31 +1,9 @@
 "use client";
 import { useMemo, useState } from "react";
 import data from "@/data/psychologists.json";
+import { AvailabilitySlot, WeeklyAvailability, generateSlotsFromWeekly, groupSlotsByDateAndModality } from "@/lib/availability";
 import Filters from "@/components/Filters";
 import PsychologistCard from "../components/PsychologistCard";
-
-type WeeklyAvailability = {
-  online: {
-    mon: string[];
-    tue: string[];
-    wed: string[];
-    thu: string[];
-    fri: string[];
-    sat: string[];
-    sun: string[];
-  };
-  presencial: {
-    mon: string[];
-    tue: string[];
-    wed: string[];
-    thu: string[];
-    fri: string[];
-    sat: string[];
-    sun: string[];
-  };
-};
-
-// Intentionally no standalone DaysKey export to avoid unused warnings
 
 type Psychologist = {
   id: string;
@@ -39,7 +17,8 @@ type Psychologist = {
   sessionMinutes: number;
   priceUSD: number;
   bio: string;
-  weeklyAvailability: WeeklyAvailability;
+  weeklyAvailability?: WeeklyAvailability;
+  slots?: AvailabilitySlot[];
 };
 
 export default function Home() {
@@ -49,25 +28,25 @@ export default function Home() {
   const [limitedOnly, setLimitedOnly] = useState(false);
   const psychologists = data as unknown as Psychologist[];
 
-  const LIMITED_THRESHOLD = 10; // tweakable
+  const LIMITED_SLOTS_THRESHOLD = 5; // based on next-90-days free slots across all modalities
 
   const results = useMemo(() => {
     const s = search.trim().toLowerCase();
-    const days = ["mon","tue","wed","thu","fri","sat","sun"] as const;
-    const countFor = (bucket: Record<typeof days[number], string[]>) => days.reduce((acc, d) => acc + (bucket[d]?.length ?? 0), 0);
+    const from = new Date();
+    const to = new Date(Date.now() + 1000 * 60 * 60 * 24 * 90);
     return psychologists.filter((p) => {
       const matchesSearch = s
         ? p.name.toLowerCase().includes(s) || p.specialties.some((x) => x.toLowerCase().includes(s))
         : true;
       const matchesCategories = categories.length > 0 ? categories.every((c) => p.specialties.includes(c)) : true;
       const matchesModalities = modalities.length > 0 ? modalities.some((m) => p.modalities.includes(m)) : true;
-      const matchesLimited = limitedOnly
-        ? (p.limited === true
-            ? true
-            : (modalities.length === 1
-                ? countFor(p.weeklyAvailability[modalities[0] === "Online" ? "online" : "presencial"]) <= LIMITED_THRESHOLD
-                : (countFor(p.weeklyAvailability.online) + countFor(p.weeklyAvailability.presencial)) <= LIMITED_THRESHOLD))
-        : true;
+      const slots = (p.slots ?? generateSlotsFromWeekly(p.weeklyAvailability, p.id, from, to));
+      const grouped = groupSlotsByDateAndModality(slots);
+      const totalFor = (rec: Record<string, unknown[]>) => Object.values(rec).reduce((acc, arr) => acc + (arr?.length ?? 0), 0);
+      const selectedCount = modalities.length === 0
+        ? totalFor(grouped.online) + totalFor(grouped.presencial)
+        : modalities.reduce((sum, m) => sum + totalFor(m === "Online" ? grouped.online : grouped.presencial), 0);
+      const matchesLimited = limitedOnly ? (selectedCount <= LIMITED_SLOTS_THRESHOLD) : true;
       return matchesSearch && matchesCategories && matchesModalities && matchesLimited;
     });
   }, [search, categories, modalities, limitedOnly, psychologists]);
@@ -112,9 +91,18 @@ export default function Home() {
         </div>
 
         <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {results.map((p) => (
-            <PsychologistCard key={p.id} data={{ ...p }} />
-          ))}
+          {results.map((p) => {
+            const from = new Date();
+            const to = new Date(Date.now() + 1000 * 60 * 60 * 24 * 90);
+            const slots = (p.slots ?? generateSlotsFromWeekly(p.weeklyAvailability, p.id, from, to));
+            const grouped = groupSlotsByDateAndModality(slots);
+            const totalFor = (rec: Record<string, unknown[]>) => Object.values(rec).reduce((acc, arr) => acc + (arr?.length ?? 0), 0);
+            const selectedCount = modalities.length === 0
+              ? totalFor(grouped.online) + totalFor(grouped.presencial)
+              : modalities.reduce((sum, m) => sum + totalFor(m === "Online" ? grouped.online : grouped.presencial), 0);
+            const limitedFlag = selectedCount <= LIMITED_SLOTS_THRESHOLD;
+            return <PsychologistCard key={p.id} data={{ ...p, limited: limitedFlag }} />;
+          })}
         </div>
       </section>
 

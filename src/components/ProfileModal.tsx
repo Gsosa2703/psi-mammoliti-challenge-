@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { AvailabilitySlot, WeeklyAvailability, formatDateKey, formatLocalTimeLabel, generateSlotsFromWeekly, groupSlotsByDateAndModality } from "@/lib/availability";
 
 type Psychologist = {
   id: string;
@@ -15,7 +16,8 @@ type Psychologist = {
   sessionMinutes: number;
   priceUSD: number;
   bio: string;
-  weeklyAvailability: Record<string, string[]>;
+  weeklyAvailability?: WeeklyAvailability;
+  slots?: AvailabilitySlot[];
 };
 
 type Props = {
@@ -24,15 +26,6 @@ type Props = {
   onClose: () => void;
 };
 
-const weekdayKeys: Array<{ key: keyof Psychologist["weeklyAvailability"]; label: string }> = [
-  { key: "mon", label: "Lun" },
-  { key: "tue", label: "Mar" },
-  { key: "wed", label: "Mié" },
-  { key: "thu", label: "Jue" },
-  { key: "fri", label: "Vie" },
-  { key: "sat", label: "Sáb" },
-  { key: "sun", label: "Dom" }
-];
 
 export default function ProfileModal({ open, data, onClose }: Props) {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
@@ -48,20 +41,27 @@ export default function ProfileModal({ open, data, onClose }: Props) {
     }
   }, [open]);
 
-  const timesForSelectedDay = useMemo(() => {
-    if (!data) return [] as string[];
-    const jsDow = selectedDate.getDay();
-    const mondayBased = (jsDow + 6) % 7; // 0..6 Monday start
-    const key = weekdayKeys[mondayBased].key as string;
-    return data.weeklyAvailability[key] ?? [];
-  }, [data, selectedDate]);
+  const grouped = useMemo(() => {
+    if (!data) return { online: {}, presencial: {} } as ReturnType<typeof groupSlotsByDateAndModality>;
+    const from = new Date();
+    const to = new Date(Date.now() + 1000 * 60 * 60 * 24 * 90);
+    const slots = data.slots ?? generateSlotsFromWeekly(data.weeklyAvailability, data.id, from, to);
+    return groupSlotsByDateAndModality(slots);
+  }, [data]);
+
+  const slotsForSelectedDay = useMemo(() => {
+    if (!data) return [] as AvailabilitySlot[];
+    const key = formatDateKey(selectedDate);
+    // Show both modalities in modal compact view
+    return [ ...(grouped.online[key] ?? []), ...(grouped.presencial[key] ?? []) ];
+  }, [data, selectedDate, grouped]);
 
   if (!open || !data) return null;
 
   function submit() {
     if (!selectedTime || !form.name || !form.email || !data) return;
     const readable = `${selectedDate.toLocaleDateString(undefined, { weekday: "long", day: "2-digit", month: "long" })} ${selectedTime}`;
-    setConfirmation(`Listo, reservaste con ${data.name} para ${readable}. Recibirás un email de confirmación (simulado).`);
+    setConfirmation(`Listo, reservaste con ${data.name} para ${readable}. Recibirás un email de confirmación.`);
   }
 
   return (
@@ -113,17 +113,17 @@ export default function ProfileModal({ open, data, onClose }: Props) {
               </div>
             </div>
             <div className="mt-2 flex flex-wrap gap-2">
-              {timesForSelectedDay.length === 0 && (
+              {slotsForSelectedDay.length === 0 && (
                 <span className="text-xs text-black/60 dark:text-white/60">Sin turnos para ese día</span>
               )}
-              {timesForSelectedDay.map((t) => (
+              {slotsForSelectedDay.map((slot) => (
                 <Button
-                  key={t}
+                  key={slot.id}
                   size="sm"
-                  variant={t === selectedTime ? "default" : "outline"}
-                  onClick={() => setSelectedTime(t)}
+                  variant={slot.date === selectedTime ? "default" : "outline"}
+                  onClick={() => setSelectedTime(slot.date)}
                 >
-                  {t}
+                  {formatLocalTimeLabel(slot.date)}
                 </Button>
               ))}
             </div>

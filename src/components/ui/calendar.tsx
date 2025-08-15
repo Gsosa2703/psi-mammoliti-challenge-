@@ -6,19 +6,21 @@ type CalendarProps = {
   value?: Date;
   onChange?: (date: Date) => void;
   minDate?: Date; // dates before this are disabled
+  maxDate?: Date; // dates after this are disabled
+  isDateDisabled?: (date: Date) => boolean; // additional predicate
 };
 
-// Minimal inline calendar inspired by shadcn style
-export function Calendar({ value, onChange, minDate }: CalendarProps) {
+export function Calendar({ value, onChange, minDate, maxDate, isDateDisabled }: CalendarProps) {
   const [cursor, setCursor] = useState<Date>(() => value ?? new Date());
   const selected = value ?? null;
 
   const minDay = minDate ? new Date(minDate.getFullYear(), minDate.getMonth(), minDate.getDate()) : null;
+  const maxDay = maxDate ? new Date(maxDate.getFullYear(), maxDate.getMonth(), maxDate.getDate()) : null;
 
   const year = cursor.getFullYear();
   const month = cursor.getMonth();
   const firstOfMonth = new Date(year, month, 1);
-  const startWeekday = (firstOfMonth.getDay() + 6) % 7; // Monday-based
+  const startWeekday = (firstOfMonth.getDay() + 6) % 7;
   const daysInMonth = new Date(year, month + 1, 0).getDate();
 
   const grid: Array<Date | null> = useMemo(() => {
@@ -74,7 +76,10 @@ export function Calendar({ value, onChange, minDate }: CalendarProps) {
       <div className="mt-1 grid grid-cols-7 gap-1">
         {grid.map((date, idx) => {
           const isSelected = selected && date && date.toDateString() === selected.toDateString();
-          const isDisabled = !!(date && minDay && date < minDay);
+          const afterMax = !!(date && maxDay && date > maxDay);
+          const beforeMin = !!(date && minDay && date < minDay);
+          const predicate = !!(date && isDateDisabled?.(date));
+          const isDisabled = beforeMin || afterMax || predicate;
           return (
             <button
               key={idx}

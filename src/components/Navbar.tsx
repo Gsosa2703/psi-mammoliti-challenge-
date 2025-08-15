@@ -8,8 +8,6 @@ export default function Navbar() {
           Psi Sesiones
         </a>
         <div className="hidden gap-6 text-sm text-black/80 dark:text-white/80 sm:flex">
-          <a href="#como-funciona" className="hover:opacity-100 opacity-80">Como funciona</a>
-          <a href="#contacto" className="hover:opacity-100 opacity-80">Contacto</a>
         </div>
         <a href="#mis-sesiones" className="rounded-full bg-[#c8a6ff] px-4 py-2 text-xs font-semibold text-black shadow-sm">
           Mis sesiones

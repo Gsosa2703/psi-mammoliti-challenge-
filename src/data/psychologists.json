@@ -30,7 +30,18 @@
         "sat": [],
         "sun": []
       }
-    }
+    },
+    "availability": [
+      { "weekday": "mon", "modality": "Online", "times": ["09:00", "12:00", "15:00"] },
+      { "weekday": "tue", "modality": "Online", "times": ["10:00", "13:00", "16:00"] },
+      { "weekday": "wed", "modality": "Online", "times": ["09:00", "12:00", "15:00"] },
+      { "weekday": "thu", "modality": "Online", "times": ["09:00", "12:00", "15:00"] },
+      { "weekday": "fri", "modality": "Online", "times": ["10:00", "13:00"] },
+      { "weekday": "mon", "modality": "Presencial", "times": ["11:00", "14:00"] },
+      { "weekday": "tue", "modality": "Presencial", "times": ["10:00"] },
+      { "weekday": "wed", "modality": "Presencial", "times": ["11:00", "14:00"] },
+      { "weekday": "thu", "modality": "Presencial", "times": ["10:00"] }
+    ]
   },
   {
     "id": "juan-perez",
@@ -62,7 +73,17 @@
         "sat": [],
         "sun": []
       }
-    }
+    },
+    "availability": [
+      { "weekday": "mon", "modality": "Online", "times": ["10:00", "14:00"] },
+      { "weekday": "tue", "modality": "Online", "times": ["09:00", "12:00", "15:00"] },
+      { "weekday": "wed", "modality": "Online", "times": ["10:00", "13:00"] },
+      { "weekday": "thu", "modality": "Online", "times": ["09:00", "12:00", "15:00"] },
+      { "weekday": "fri", "modality": "Online", "times": ["09:00", "11:00", "13:00"] },
+      { "weekday": "tue", "modality": "Presencial", "times": ["11:00"] },
+      { "weekday": "wed", "modality": "Presencial", "times": ["12:00"] },
+      { "weekday": "fri", "modality": "Presencial", "times": ["12:00"] }
+    ]
   },
   {
     "id": "carla-gomez",
@@ -95,7 +116,18 @@
         "sat": [],
         "sun": []
       }
-    }
+    },
+    "availability": [
+      { "weekday": "mon", "modality": "Online", "times": ["09:00", "12:00"] },
+      { "weekday": "tue", "modality": "Online", "times": ["11:00", "14:00", "17:00"] },
+      { "weekday": "wed", "modality": "Online", "times": ["09:00", "12:00"] },
+      { "weekday": "thu", "modality": "Online", "times": ["10:00", "13:00"] },
+      { "weekday": "fri", "modality": "Online", "times": ["09:00", "12:00"] },
+      { "weekday": "sat", "modality": "Online", "times": ["10:00"] },
+      { "weekday": "mon", "modality": "Presencial", "times": ["10:00"] },
+      { "weekday": "wed", "modality": "Presencial", "times": ["11:00"] },
+      { "weekday": "fri", "modality": "Presencial", "times": ["10:00"] }
+    ]
   },
   {
     "id": "sofia-ruiz",
@@ -127,7 +159,17 @@
         "sat": [],
         "sun": []
       }
-    }
+    },
+    "availability": [
+      { "weekday": "mon", "modality": "Online", "times": ["08:00", "11:00", "14:00"] },
+      { "weekday": "tue", "modality": "Online", "times": ["09:00", "12:00"] },
+      { "weekday": "wed", "modality": "Online", "times": ["10:00", "13:00", "16:00"] },
+      { "weekday": "thu", "modality": "Online", "times": ["09:00", "12:00"] },
+      { "weekday": "fri", "modality": "Online", "times": ["09:00", "12:00", "15:00"] },
+      { "weekday": "mon", "modality": "Presencial", "times": ["11:00", "15:00"] },
+      { "weekday": "wed", "modality": "Presencial", "times": ["12:00"] },
+      { "weekday": "thu", "modality": "Presencial", "times": ["10:00"] }
+    ]
   },
   {
     "id": "martin-ibarra",
@@ -160,7 +202,16 @@
         "sat": [],
         "sun": []
       }
-    }
+    },
+    "availability": [
+      { "weekday": "mon", "modality": "Online", "times": ["10:00", "12:00"] },
+      { "weekday": "tue", "modality": "Online", "times": ["09:00", "11:00", "13:00"] },
+      { "weekday": "wed", "modality": "Online", "times": ["10:00", "12:00"] },
+      { "weekday": "thu", "modality": "Online", "times": ["09:00", "12:00", "15:00"] },
+      { "weekday": "fri", "modality": "Online", "times": ["10:00", "13:00"] },
+      { "weekday": "tue", "modality": "Presencial", "times": ["12:00"] },
+      { "weekday": "thu", "modality": "Presencial", "times": ["11:00"] }
+    ]
   },
   {
     "id": "valentina-arias",
@@ -192,7 +243,54 @@
         "sat": [],
         "sun": []
       }
-    }
+    },
+    "availability": [
+      { "weekday": "mon", "modality": "Online", "times": ["09:00", "12:00"] },
+      { "weekday": "tue", "modality": "Online", "times": ["10:00", "13:00"] },
+      { "weekday": "wed", "modality": "Online", "times": ["09:00", "12:00", "15:00"] },
+      { "weekday": "thu", "modality": "Online", "times": ["10:00", "13:00"] },
+      { "weekday": "fri", "modality": "Online", "times": ["09:00", "12:00"] },
+      { "weekday": "sat", "modality": "Online", "times": ["11:00"] },
+      { "weekday": "wed", "modality": "Presencial", "times": ["11:00"] },
+      { "weekday": "fri", "modality": "Presencial", "times": ["10:00"] }
+    ]
+  },
+  {
+    "id": "luca-silva",
+    "name": "Lic. Luca Silva",
+    "image": "https://images.unsplash.com/photo-1548142813-c348350df52b?q=80&w=1200&auto=format&fit=crop",
+    "rating": 4.5,
+    "experienceYears": 6,
+    "sessionMinutes": 50,
+    "priceUSD": 48,
+    "modalities": ["Online"],
+    "specialties": ["Ansiedad", "Estrés", "Autoestima"],
+    "bio": "Acompaño procesos de cambio con herramientas prácticas y un enfoque cálido.",
+    "slots": [
+      { "id": "luca-silva|on|2025-08-20T15:00:00Z", "psychologistId": "luca-silva", "modality": "Online", "date": "2025-08-20T15:00:00Z", "status": "free" },
+      { "id": "luca-silva|on|2025-08-27T15:00:00Z", "psychologistId": "luca-silva", "modality": "Online", "date": "2025-08-27T15:00:00Z", "status": "free" },
+      { "id": "luca-silva|on|2025-09-03T15:00:00Z", "psychologistId": "luca-silva", "modality": "Online", "date": "2025-09-03T15:00:00Z", "status": "free" },
+      { "id": "luca-silva|on|2025-09-10T15:00:00Z", "psychologistId": "luca-silva", "modality": "Online", "date": "2025-09-10T15:00:00Z", "status": "free" }
+    ]
+  },
+  {
+    "id": "alejandra-nunez",
+    "name": "Dra. Alejandra Núñez",
+    "image": "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?q=80&w=1200&auto=format&fit=crop",
+    "rating": 4.92,
+    "experienceYears": 13,
+    "sessionMinutes": 50,
+    "priceUSD": 68,
+    "modalities": ["Online", "Presencial"],
+    "specialties": ["Duelo", "Ansiedad", "Burnout"],
+    "bio": "Escucha activa y estrategias basadas en evidencia para acompañarte en tu proceso.",
+    "slots": [
+      { "id": "alejandra-nunez|on|2025-08-22T14:00:00Z", "psychologistId": "alejandra-nunez", "modality": "Online", "date": "2025-08-22T14:00:00Z", "status": "free" },
+      { "id": "alejandra-nunez|on|2025-09-05T14:00:00Z", "psychologistId": "alejandra-nunez", "modality": "Online", "date": "2025-09-05T14:00:00Z", "status": "free" },
+      { "id": "alejandra-nunez|pr|2025-09-12T13:00:00Z", "psychologistId": "alejandra-nunez", "modality": "Presencial", "date": "2025-09-12T13:00:00Z", "status": "free" },
+      { "id": "alejandra-nunez|pr|2025-10-03T13:00:00Z", "psychologistId": "alejandra-nunez", "modality": "Presencial", "date": "2025-10-03T13:00:00Z", "status": "free" },
+      { "id": "alejandra-nunez|on|2025-10-10T14:00:00Z", "psychologistId": "alejandra-nunez", "modality": "Online", "date": "2025-10-10T14:00:00Z", "status": "free" }
+    ]
   }
 ]
 

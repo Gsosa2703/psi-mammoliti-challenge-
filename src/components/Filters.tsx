@@ -78,7 +78,6 @@ export default function Filters(props: FiltersProps) {
         <div className="mb-2 flex items-center justify-between text-sm font-medium">
           <span className="text-black/80 dark:text-white/80">Poca disponibilidad</span>
           <label className="inline-flex cursor-pointer items-center gap-2">
-            <span className="text-xs text-black/60 dark:text-white/60">Filtro</span>
             <input type="checkbox" checked={limitedOnly} onChange={onToggleLimited} className="peer hidden" />
             <span className="relative inline-flex h-5 w-9 cursor-pointer items-center rounded-full bg-black/15 transition peer-checked:bg-red-500">
               <span className="absolute left-0.5 h-4 w-4 rounded-full bg-white transition peer-checked:left-4" />
